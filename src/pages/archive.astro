@@ -1,6 +1,6 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { posts } from "@/data/site";
+import { posts } from "@/utils/posts";
 import { categoryUrl, tagUrl } from "@/utils/taxonomy";
 
 const archiveItems = posts
@@ -30,8 +30,33 @@ const archiveGroups = archiveItems.reduce<Array<{ key: string; label: string; it
   return groups;
 }, []);
 
-const categories = [...new Set(posts.map((post) => post.category))];
-const tags = [...new Set(posts.flatMap((post) => post.tags))];
+const categories = [
+  ...posts
+    .reduce((categoryMap, post) => {
+      const slug = categoryUrl(post.category);
+
+      if (!categoryMap.has(slug)) {
+        categoryMap.set(slug, post.category);
+      }
+
+      return categoryMap;
+    }, new Map<string, string>())
+    .values(),
+];
+const tags = [
+  ...posts
+    .flatMap((post) => post.tags)
+    .reduce((tagMap, tag) => {
+      const slug = tagUrl(tag);
+
+      if (!tagMap.has(slug)) {
+        tagMap.set(slug, tag);
+      }
+
+      return tagMap;
+    }, new Map<string, string>())
+    .values(),
+];
 ---
 
 <BaseLayout title="归档">

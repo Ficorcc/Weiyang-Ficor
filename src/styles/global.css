@@ -829,6 +829,55 @@ h3 {
   font-size: 1.04rem;
 }
 
+.post-body p,
+.post-body ul,
+.post-body ol,
+.post-body blockquote,
+.post-body figure {
+  margin: 0;
+}
+
+.post-body img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+}
+
+.post-body figcaption {
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.45;
+  text-align: center;
+}
+
+.post-body blockquote {
+  padding-left: 18px;
+  border-left: 1px solid var(--line);
+  color: var(--muted);
+}
+
+.post-body .lared-grid-2,
+.post-body .lared-grid-3,
+.post-body .lared-grid-4 {
+  display: grid;
+  gap: 10px;
+  margin: 0;
+}
+
+.post-body .lared-grid-2 {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.post-body .lared-grid-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.post-body .lared-grid-4 {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .post-side {
   position: sticky;
   top: 24px;
@@ -1469,6 +1518,12 @@ h3 {
   }
 
   .comment-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .post-body .lared-grid-2,
+  .post-body .lared-grid-3,
+  .post-body .lared-grid-4 {
     grid-template-columns: 1fr;
   }
 

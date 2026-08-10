@@ -1,16 +1,26 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { posts } from "@/data/site";
+import { posts } from "@/utils/posts";
 import { categoryUrl, taxonomySlug } from "@/utils/taxonomy";
 
 export function getStaticPaths() {
-  const tags = [...new Set(posts.flatMap((post) => post.tags))];
+  const tags = posts
+    .flatMap((post) => post.tags)
+    .reduce((tagMap, tag) => {
+      const slug = taxonomySlug(tag);
 
-  return tags.map((tag) => ({
-    params: { tag: taxonomySlug(tag) },
+      if (!tagMap.has(slug)) {
+        tagMap.set(slug, tag);
+      }
+
+      return tagMap;
+    }, new Map<string, string>());
+
+  return [...tags].map(([slug, tag]) => ({
+    params: { tag: slug },
     props: {
       tag,
-      tagPosts: posts.filter((post) => post.tags.includes(tag)),
+      tagPosts: posts.filter((post) => post.tags.some((postTag) => taxonomySlug(postTag) === slug)),
     },
   }));
 }

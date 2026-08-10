@@ -21,7 +21,7 @@ Weiyang is a quiet personal blog theme built with Astro 7. It is designed for lo
 - Friends page with site name, description, URL, feed URL and latest feed items.
 - RSS output route.
 - LXGW WenKai / Xiawu Feikai style font stack.
-- Centralized site data in `src/data/site.ts`.
+- Markdown posts and moments, with centralized site settings in `src/data/site.ts`.
 
 ## Theme Name
 
@@ -60,8 +60,11 @@ npm run preview
 ```text
 src/
   data/
-    site.ts              Site, navigation, posts, moments, comments and projects
+    site.ts              Site, navigation, comments, social links and projects
     friends.ts           Friend links and feed samples
+  content/
+    posts/               Markdown articles
+    moments/             Markdown moments
   layouts/
     BaseLayout.astro     Shared layout, navigation, search, theme switcher and footer
   pages/
@@ -77,6 +80,8 @@ src/
   styles/
     global.css           Theme colors, layout and component styling
   utils/
+    posts.ts             Markdown post loader and normalizer
+    moments.ts           Markdown moment loader and normalizer
     taxonomy.ts          Category and tag URL helpers
 public/
   assets/logo.png        Site logo
@@ -85,7 +90,7 @@ public/
 
 ## Customization
 
-Edit site metadata, navigation, posts, moments and social links in:
+Edit site metadata, navigation and social links in:
 
 ```text
 src/data/site.ts
@@ -119,12 +124,22 @@ The theme colors are controlled by CSS variables under:
 
 ## Content Model
 
-The starter currently keeps posts and moments in TypeScript data files so the theme is easy to inspect and customize.
+Posts live in:
 
-Suggested next step for a production blog:
+```text
+src/content/posts/
+```
 
-- Move posts into Astro content collections.
-- Generate the post table of contents from Markdown headings.
+Moments live in:
+
+```text
+src/content/moments/
+```
+
+Supported post frontmatter fields include `title`, `date`, `pubDate`, `pubDatetime`, `timestamp`, `category`, `series`, `tags` and `description`. The post table of contents is generated from Markdown headings.
+
+Suggested next steps for a production blog:
+
 - Connect the comment form to Waline, Twikoo or a custom API.
 - Fetch friend feed updates from real RSS or Atom feeds.
 

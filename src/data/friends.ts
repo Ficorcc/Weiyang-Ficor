@@ -42,14 +42,14 @@ export const friendLinks = [
     feedUrl: "https://example.com/rss.xml",
     latestPosts: [
       {
-        title: "把首页当成一张个人名片",
-        url: "/posts/home-as-card/",
+        title: "AI工具近况",
+        url: "/posts/ai工具近况/",
         date: "2026-08-10",
       },
       {
-        title: "Astro 主题的轻量骨架",
-        url: "/posts/astro-theme-shell/",
-        date: "2026-08-09",
+        title: "2025年终总结",
+        url: "/posts/2025年终总结/",
+        date: "2025-12-31",
       },
     ],
   },

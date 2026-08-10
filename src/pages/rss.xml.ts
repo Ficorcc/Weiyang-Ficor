@@ -1,4 +1,5 @@
-import { posts, site as siteData } from "@/data/site";
+import { site as siteData } from "@/data/site";
+import { posts } from "@/utils/posts";
 
 function escapeXml(value: string) {
   return value

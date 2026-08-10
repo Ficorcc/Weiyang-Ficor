@@ -1,6 +1,8 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { latestComments, moments, posts, profile, site } from "@/data/site";
+import { latestComments, profile, site } from "@/data/site";
+import { moments } from "@/utils/moments";
+import { posts } from "@/utils/posts";
 import { categoryUrl, tagUrl } from "@/utils/taxonomy";
 
 const latestMoment = moments[0];
