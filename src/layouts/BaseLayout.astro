@@ -255,10 +255,10 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
         <div class="search-panel" data-search-panel hidden>
           <label class="search-label" for="site-search">搜索</label>
           <input id="site-search" class="search-input" type="search" placeholder="输入文章标题或标签" autocomplete="off" data-search-input />
-          <div class="search-results" data-search-results>
+          <div class="search-results" data-search-results hidden>
             {
               posts.map((post) => (
-                <a class="search-result" href={post.href} data-search-item={`${post.title} ${post.category} ${post.tags.join(" ")}`}>
+                <a class="search-result" href={post.href} data-search-item={`${post.title} ${post.category} ${post.tags.join(" ")}`} hidden>
                   <span>{post.title}</span>
                   <small>{post.category} · {post.tags.map((tag) => `#${tag}`).join(" ")}</small>
                 </a>
@@ -309,6 +309,7 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
         const searchButton = document.querySelector("[data-search-toggle]");
         const searchPanel = document.querySelector("[data-search-panel]");
         const searchInput = document.querySelector("[data-search-input]");
+        const searchResults = document.querySelector("[data-search-results]");
         const searchItems = [...document.querySelectorAll("[data-search-item]")];
         const travelMenu = document.querySelector("[data-travel-menu]");
         const travelButton = document.querySelector("[data-travel-toggle]");
@@ -395,11 +396,20 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
 
         themeMenu?.addEventListener("mouseleave", closeThemeMenu);
 
+        const resetSearchResults = () => {
+          if (searchInput) searchInput.value = "";
+          searchResults?.setAttribute("hidden", "");
+          searchItems.forEach((item) => item.setAttribute("hidden", ""));
+        };
+
         searchButton?.addEventListener("click", () => {
           const isOpening = searchPanel?.hasAttribute("hidden");
           searchPanel?.toggleAttribute("hidden", !isOpening);
           searchButton.setAttribute("aria-expanded", String(Boolean(isOpening)));
-          if (isOpening) window.setTimeout(() => searchInput?.focus(), 0);
+          if (isOpening) {
+            resetSearchResults();
+            window.setTimeout(() => searchInput?.focus(), 0);
+          }
         });
 
         travelMenu?.addEventListener("mouseenter", () => {
@@ -420,9 +430,10 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
 
         searchInput?.addEventListener("input", () => {
           const keyword = searchInput.value.trim().toLowerCase();
+          searchResults?.toggleAttribute("hidden", !keyword);
           searchItems.forEach((item) => {
             const text = item.getAttribute("data-search-item")?.toLowerCase() || "";
-            item.toggleAttribute("hidden", Boolean(keyword) && !text.includes(keyword));
+            item.toggleAttribute("hidden", !keyword || !text.includes(keyword));
           });
         });
 
@@ -430,6 +441,7 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
           if (event.key === "Escape") {
             searchPanel?.setAttribute("hidden", "");
             searchButton?.setAttribute("aria-expanded", "false");
+            resetSearchResults();
             closeTravelMenu();
             closeThemeMenu();
           }

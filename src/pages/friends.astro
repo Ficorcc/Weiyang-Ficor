@@ -10,6 +10,15 @@ const ownSiteInfo = [
   { label: "图标", text: "https://panjinye.com/favicon.ico", href: "https://panjinye.com/favicon.ico" },
   { label: "描述", text: site.description },
 ];
+
+const latestFriendDate = (friend: (typeof friendLinks)[number]) => friend.latestPosts[0]?.date ?? "";
+const sortedFriendLinks = [...friendLinks].sort((a, b) => {
+  const dateCompare = latestFriendDate(b).localeCompare(latestFriendDate(a));
+  return dateCompare || a.name.localeCompare(b.name, "zh-Hans-CN");
+});
+const friendFeedRefreshConfig = sortedFriendLinks
+  .filter((friend) => friend.feedUrl)
+  .map((friend) => ({ url: friend.url, feedUrl: friend.feedUrl }));
 ---
 
 <BaseLayout title="友链">
@@ -17,36 +26,42 @@ const ownSiteInfo = [
     <p class="eyebrow">Friends</p>
     <h1>友链</h1>
     <section class="friend-site-info" aria-labelledby="friend-site-info-title">
-      <div class="friend-site-info-heading">
-        <h2 id="friend-site-info-title">站点信息</h2>
+      <div class="friend-site-info-card">
+        <div class="friend-site-info-heading">
+          <h2 id="friend-site-info-title">站点信息</h2>
+        </div>
+        <dl class="friend-site-info-list">
+          {
+            ownSiteInfo.map((item) => (
+              <div>
+                <dt>{item.label}</dt>
+                <dd>
+                  <span class="friend-site-info-value">
+                    {item.href ? (
+                      <a href={item.href}>{item.text}</a>
+                    ) : (
+                      item.text
+                    )}
+                  </span>
+                  <button class="friend-copy-button" type="button" data-copy-value={item.text} aria-label={"复制" + item.label} title={"复制" + item.label}>
+                    <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                    <span>复制</span>
+                  </button>
+                </dd>
+              </div>
+            ))
+          }
+        </dl>
       </div>
-      <dl class="friend-site-info-list">
-        {
-          ownSiteInfo.map((item) => (
-            <div>
-              <dt>{item.label}</dt>
-              <dd>
-                <span class="friend-site-info-value">
-                  {item.href ? (
-                    <a href={item.href}>{item.text}</a>
-                  ) : (
-                    item.text
-                  )}
-                </span>
-                <button class="friend-copy-button" type="button" data-copy-value={item.text} aria-label={"复制" + item.label} title={"复制" + item.label}>
-                  <i class="fa-regular fa-copy" aria-hidden="true"></i>
-                  <span>复制</span>
-                </button>
-              </dd>
-            </div>
-          ))
-        }
-      </dl>
+      <div class="friend-link-note">
+        <p>笔者将外站链接视为一种真实而有价值的推荐，收录自己<strong>真正欣赏、常读或愿意分享</strong>的站点。</p>
+        <p>希望每一个链接都是<strong>内容共鸣</strong>与<strong>价值认同</strong>的体现，并能以此构建起一个充满个性与温度的站点网络。</p>
+      </div>
     </section>
-    <div class="friend-list">
+    <div class="friend-list" data-friend-list>
       {
-        friendLinks.map((friend) => (
-          <article class="friend-item">
+        sortedFriendLinks.map((friend) => (
+          <article class="friend-item" data-friend-card data-friend-url={friend.url} data-feed-url={friend.feedUrl} data-latest-date={latestFriendDate(friend)}>
             <header class="friend-head">
               <div>
                 <h2><a href={friend.url}>{friend.name}</a></h2>
@@ -54,26 +69,27 @@ const ownSiteInfo = [
               </div>
               <a class="friend-url" href={friend.url}>{new URL(friend.url).host}</a>
             </header>
-            <div class="friend-feed">
-              <div class="friend-feed-meta">
-                <span>订阅</span>
-                <a href={friend.feedUrl}>{friend.feedUrl.replace(/^https?:\/\//, "")}</a>
-              </div>
-              <ol class="friend-updates">
-                {friend.latestPosts.map((post) => (
-                  <li>
-                    <a href={post.url}>{post.title}</a>
-                    <time datetime={post.date}>{post.date}</time>
-                  </li>
-                ))}
-              </ol>
+            <div class="friend-feed" data-friend-feed>
+              {friend.latestPosts.length ? (
+                <ol class="friend-updates">
+                  {friend.latestPosts.slice(0, 3).map((post) => (
+                    <li>
+                      <a href={post.url}>{post.title}</a>
+                      <time datetime={post.date}>{post.date}</time>
+                    </li>
+                  ))}
+                </ol>
+              ) : (
+                <p class="friend-feed-empty">暂未获取到更新</p>
+              )}
             </div>
           </article>
         ))
       }
     </div>
   </section>
-</BaseLayout>
+
+<script type="application/json" id="friend-feed-refresh-config" set:html={JSON.stringify(friendFeedRefreshConfig)}></script>
 
 <script is:inline>
   (() => {
@@ -121,5 +137,80 @@ const ownSiteInfo = [
         }
       });
     });
+
+    const friendList = document.querySelector("[data-friend-list]");
+    const refreshConfig = document.getElementById("friend-feed-refresh-config");
+
+    const renderPosts = (feed, posts) => {
+      feed.textContent = "";
+      if (!posts.length) {
+        const empty = document.createElement("p");
+        empty.className = "friend-feed-empty";
+        empty.textContent = "暂未获取到更新";
+        feed.append(empty);
+        return;
+      }
+
+      const list = document.createElement("ol");
+      list.className = "friend-updates";
+      posts.slice(0, 3).forEach((post) => {
+        const item = document.createElement("li");
+        const link = document.createElement("a");
+        link.href = post.url;
+        link.textContent = post.title;
+        const time = document.createElement("time");
+        time.dateTime = post.date || "";
+        time.textContent = post.date || "";
+        item.append(link, time);
+        list.append(item);
+      });
+      feed.append(list);
+    };
+
+    const sortFriendCards = () => {
+      if (!friendList) return;
+      const cards = [...friendList.querySelectorAll("[data-friend-card]")];
+      cards
+        .sort((a, b) => {
+          const dateCompare = (b.getAttribute("data-latest-date") || "").localeCompare(a.getAttribute("data-latest-date") || "");
+          const nameA = a.querySelector("h2")?.textContent || "";
+          const nameB = b.querySelector("h2")?.textContent || "";
+          return dateCompare || nameA.localeCompare(nameB, "zh-Hans-CN");
+        })
+        .forEach((card) => friendList.append(card));
+    };
+
+    const refreshFriendFeeds = async () => {
+      if (!friendList || !refreshConfig?.textContent) return;
+      const feeds = JSON.parse(refreshConfig.textContent);
+      if (!feeds.length) return;
+
+      try {
+        const response = await fetch("/api/friend-feeds", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ feeds }),
+          cache: "no-store",
+        });
+        if (!response.ok) return;
+        const data = await response.json();
+        const refreshed = Array.isArray(data.friends) ? data.friends : [];
+
+        refreshed.forEach((friend) => {
+          const card = friendList.querySelector('[data-friend-url="' + CSS.escape(friend.url) + '"]');
+          const feed = card?.querySelector("[data-friend-feed]");
+          const posts = Array.isArray(friend.latestPosts) ? friend.latestPosts : [];
+          if (!card || !feed || friend.ok === false) return;
+          renderPosts(feed, posts);
+          card.setAttribute("data-latest-date", posts[0]?.date || "");
+        });
+
+        sortFriendCards();
+      } catch {}
+    };
+
+    sortFriendCards();
+    refreshFriendFeeds();
   })();
 </script>
+</BaseLayout>
