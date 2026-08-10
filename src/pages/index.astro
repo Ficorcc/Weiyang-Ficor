@@ -54,10 +54,11 @@ const subtitleLines = Array.isArray(profile.subtitle) ? profile.subtitle : [prof
     <div class="moment-list home-moment-section">
       <article class="moment-item">
         <div>
-          <h3>{latestMoment.title}</h3>
           <p>{latestMoment.text}</p>
         </div>
-        <time datetime={latestMoment.date}>{latestMoment.date}</time>
+        <a class="moment-time-link" href="/moments/" aria-label="查看所有动态">
+          <time datetime={latestMoment.date}>{latestMoment.date}</time>
+        </a>
       </article>
     </div>
 

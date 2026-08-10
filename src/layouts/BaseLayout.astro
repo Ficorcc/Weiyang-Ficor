@@ -180,9 +180,14 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
     <script is:inline>
       (() => {
         const themes = ["paper", "pine", "dark"];
-        const storedTheme = localStorage.getItem("theme-mode");
-        const preferredTheme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "paper";
-        document.documentElement.dataset.theme = themes.includes(storedTheme) ? storedTheme : preferredTheme;
+        const storedTheme = localStorage.getItem("theme-mode") || "auto";
+        const getAutoTheme = () => {
+          const hour = new Date().getHours();
+          return hour >= 6 && hour < 18 ? "paper" : "dark";
+        };
+        const theme = storedTheme === "auto" ? getAutoTheme() : themes.includes(storedTheme) ? storedTheme : getAutoTheme();
+        document.documentElement.dataset.theme = theme;
+        document.documentElement.dataset.themeMode = storedTheme === "auto" || themes.includes(storedTheme) ? storedTheme : "auto";
       })();
     </script>
     <title>{pageTitle}</title>
@@ -224,9 +229,28 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
               }
             </div>
           </div>
-          <button class="nav-link nav-button" type="button" aria-label="切换主题颜色" title="切换主题颜色" data-theme-toggle>
-            <i class:list={["nav-fa-icon", fontAwesomeV6Controls.theme]} aria-hidden="true"></i>
-          </button>
+          <div class="nav-theme" data-theme-menu>
+            <button class="nav-link nav-button theme-toggle" type="button" aria-label="主题菜单" title="主题菜单" aria-expanded="false" data-theme-toggle>
+              <i class:list={["nav-fa-icon", fontAwesomeV6Controls.theme]} aria-hidden="true"></i>
+            </button>
+            <div class="theme-menu" aria-label="主题模式">
+              <button type="button" data-theme-option="auto">
+                <span>自动</span>
+              </button>
+              <button type="button" data-theme-option="paper">
+                <span>日间</span>
+                <small>浅色纸张</small>
+              </button>
+              <button type="button" data-theme-option="pine">
+                <span>绿色</span>
+                <small>松叶配色</small>
+              </button>
+              <button type="button" data-theme-option="dark">
+                <span>夜间</span>
+                <small>深色阅读</small>
+              </button>
+            </div>
+          </div>
         </nav>
         <div class="search-panel" data-search-panel hidden>
           <label class="search-label" for="site-search">搜索</label>
@@ -288,31 +312,98 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
         const searchItems = [...document.querySelectorAll("[data-search-item]")];
         const travelMenu = document.querySelector("[data-travel-menu]");
         const travelButton = document.querySelector("[data-travel-toggle]");
+        const themeMenu = document.querySelector("[data-theme-menu]");
+        const themeOptions = [...document.querySelectorAll("[data-theme-option]")];
         let travelCloseTimer;
+        let themeCloseTimer;
+        let autoThemeTimer;
 
         const themes = ["paper", "pine", "dark"];
         const themeNames = {
+          auto: "自动",
           paper: "日间",
           pine: "绿色",
           dark: "夜间",
         };
 
-        const getNextTheme = (theme) => {
-          const index = themes.indexOf(theme);
-          return themes[(index + 1) % themes.length];
+        const getAutoTheme = () => {
+          const hour = new Date().getHours();
+          return hour >= 6 && hour < 18 ? "paper" : "dark";
         };
 
-        const setTheme = (theme) => {
-          const nextTheme = getNextTheme(theme);
-          root.dataset.theme = theme;
-          localStorage.setItem("theme-mode", theme);
-          themeButton?.setAttribute("aria-label", `切换主题颜色，当前${themeNames[theme]}，下一项${themeNames[nextTheme]}`);
-          themeButton?.setAttribute("title", `主题：${themeNames[theme]}，点击切换到${themeNames[nextTheme]}`);
+        const getNextAutoSwitchDelay = () => {
+          const now = new Date();
+          const next = new Date(now);
+          const hour = now.getHours();
+          if (hour < 6) {
+            next.setHours(6, 0, 0, 0);
+          } else if (hour < 18) {
+            next.setHours(18, 0, 0, 0);
+          } else {
+            next.setDate(next.getDate() + 1);
+            next.setHours(6, 0, 0, 0);
+          }
+          return Math.max(next.getTime() - now.getTime(), 1000);
         };
 
-        setTheme(themes.includes(root.dataset.theme) ? root.dataset.theme : "paper");
+        const updateThemeMenu = (mode, theme) => {
+          themeOptions.forEach((option) => {
+            const isActive = option.getAttribute("data-theme-option") === mode;
+            option.classList.toggle("is-active", isActive);
+            option.setAttribute("aria-pressed", String(isActive));
+          });
+          const modeName = themeNames[mode] || themeNames.auto;
+          const themeName = themeNames[theme] || themeNames.paper;
+          const title = mode === "auto" ? `主题：自动（当前${themeName}）` : `主题：${modeName}`;
+          themeButton?.setAttribute("aria-label", title);
+          themeButton?.setAttribute("title", title);
+        };
+
+        const applyThemeMode = (mode, options = { persist: true }) => {
+          const nextMode = mode === "auto" || themes.includes(mode) ? mode : "auto";
+          const nextTheme = nextMode === "auto" ? getAutoTheme() : nextMode;
+          root.dataset.theme = nextTheme;
+          root.dataset.themeMode = nextMode;
+          if (options.persist) localStorage.setItem("theme-mode", nextMode);
+          window.clearTimeout(autoThemeTimer);
+          if (nextMode === "auto") {
+            autoThemeTimer = window.setTimeout(() => applyThemeMode("auto", { persist: false }), getNextAutoSwitchDelay());
+          }
+          updateThemeMenu(nextMode, nextTheme);
+        };
+
+        const closeThemeMenu = () => {
+          themeMenu?.classList.remove("is-open");
+          themeMenu?.classList.remove("is-hover-open");
+          themeButton?.setAttribute("aria-expanded", "false");
+        };
+
+        applyThemeMode(localStorage.getItem("theme-mode") || root.dataset.themeMode || "auto", { persist: false });
         themeButton?.addEventListener("click", () => {
-          setTheme(getNextTheme(root.dataset.theme || "paper"));
+          const isOpen = themeMenu?.classList.toggle("is-open");
+          themeButton.setAttribute("aria-expanded", String(Boolean(isOpen)));
+        });
+
+        themeOptions.forEach((option) => {
+          option.addEventListener("click", () => {
+            applyThemeMode(option.getAttribute("data-theme-option") || "auto");
+            closeThemeMenu();
+          });
+        });
+
+        themeMenu?.addEventListener("mouseenter", () => {
+          window.clearTimeout(themeCloseTimer);
+          themeMenu.classList.add("is-hover-open");
+          themeButton?.setAttribute("aria-expanded", "true");
+        });
+
+        themeMenu?.addEventListener("mouseleave", () => {
+          themeCloseTimer = window.setTimeout(() => {
+            themeMenu.classList.remove("is-hover-open");
+            if (!themeMenu.classList.contains("is-open")) {
+              themeButton?.setAttribute("aria-expanded", "false");
+            }
+          }, 650);
         });
 
         searchButton?.addEventListener("click", () => {
@@ -348,6 +439,9 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
             travelMenu?.classList.remove("is-hover-open");
             travelButton?.setAttribute("aria-expanded", "false");
           }
+          if (!themeMenu?.contains(event.target)) {
+            closeThemeMenu();
+          }
         });
 
         searchInput?.addEventListener("input", () => {
@@ -365,6 +459,7 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
             travelMenu?.classList.remove("is-open");
             travelMenu?.classList.remove("is-hover-open");
             travelButton?.setAttribute("aria-expanded", "false");
+            closeThemeMenu();
           }
         });
       })();

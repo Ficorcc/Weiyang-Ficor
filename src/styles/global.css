@@ -192,12 +192,14 @@ a:hover {
   font: inherit;
 }
 
-.nav-travel {
+.nav-travel,
+.nav-theme {
   position: relative;
   display: inline-flex;
 }
 
-.nav-travel::after {
+.nav-travel::after,
+.nav-theme::after {
   content: "";
   height: 14px;
   position: absolute;
@@ -211,7 +213,8 @@ a:hover {
   transform: rotate(-18deg);
 }
 
-.travel-menu {
+.travel-menu,
+.theme-menu {
   min-width: 174px;
   position: absolute;
   top: calc(100% + 9px);
@@ -234,7 +237,8 @@ a:hover {
   pointer-events: none;
 }
 
-.travel-menu::before {
+.travel-menu::before,
+.theme-menu::before {
   content: "";
   width: 9px;
   height: 9px;
@@ -250,40 +254,65 @@ a:hover {
 .nav-travel:hover .travel-menu,
 .nav-travel:focus-within .travel-menu,
 .nav-travel.is-hover-open .travel-menu,
-.nav-travel.is-open .travel-menu {
+.nav-travel.is-open .travel-menu,
+.nav-theme:hover .theme-menu,
+.nav-theme:focus-within .theme-menu,
+.nav-theme.is-hover-open .theme-menu,
+.nav-theme.is-open .theme-menu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);
   pointer-events: auto;
 }
 
-.travel-menu a {
+.travel-menu a,
+.theme-menu button {
   min-width: 0;
   display: grid;
   gap: 2px;
   padding: 7px 9px;
+  border: 0;
   border-radius: calc(var(--radius) - 2px);
+  background: transparent;
   color: var(--ink);
+  font: inherit;
+  text-align: left;
   text-decoration: none;
+  cursor: pointer;
 }
 
 .travel-menu a:hover,
-.travel-menu a:focus-visible {
+.travel-menu a:focus-visible,
+.theme-menu button:hover,
+.theme-menu button:focus-visible,
+.theme-menu button.is-active {
   background: var(--page);
   color: var(--red);
   outline: none;
 }
 
-.travel-menu span {
+.travel-menu span,
+.theme-menu span {
   font-size: 0.9rem;
   line-height: 1.25;
 }
 
-.travel-menu small {
+.travel-menu small,
+.theme-menu small {
   color: var(--muted);
   font-family: var(--font-sans);
   font-size: 0.68rem;
   line-height: 1.2;
+}
+
+.theme-menu {
+  min-width: 188px;
+}
+
+.theme-menu button.is-active span::after {
+  content: "✓";
+  margin-left: 6px;
+  color: var(--red);
 }
 
 .search-panel {
@@ -524,6 +553,17 @@ h3 {
 .moment-item time {
   align-self: flex-end;
   line-height: 1.2;
+}
+
+.moment-time-link {
+  align-self: flex-end;
+  color: var(--muted);
+  text-decoration: none;
+}
+
+.moment-time-link:hover,
+.moment-time-link:focus-visible {
+  color: var(--red);
 }
 
 .moment-item h2,
