@@ -6,6 +6,7 @@ import { posts } from "@/utils/posts";
 import { categoryUrl, tagUrl } from "@/utils/taxonomy";
 
 const latestMoment = moments[0];
+const latestPosts = posts.slice(0, 10);
 const updateEntries = [
   ...moments.map((moment) => ({ date: moment.date, title: moment.title, type: "动态" })),
   ...posts.map((post) => ({ date: post.date, title: post.title, type: post.category })),
@@ -60,7 +61,7 @@ const maxUpdateCount = Math.max(...timelineItems.map((item) => item.count));
     <p class="section-kicker note-kicker">NOTE</p>
     <div class="article-list home-article-section">
       {
-        posts.map((post) => (
+        latestPosts.map((post) => (
           <article class="moment-item article-row">
             <div class="article-title-line">
               <h3><a href={post.href}>{post.title}</a></h3>
