@@ -1,12 +1,48 @@
 ---
 import { friendLinks } from "@/data/friends";
+import { site } from "@/data/site";
 import BaseLayout from "@/layouts/BaseLayout.astro";
+
+const ownSiteInfo = [
+  { label: "名称", text: "Ficor's Blog" },
+  { label: "地址", text: "https://panjinye.com", href: "https://panjinye.com/" },
+  { label: "订阅", text: "https://panjinye.com/feed.xml", href: "https://panjinye.com/feed.xml" },
+  { label: "图标", text: "https://panjinye.com/favicon.ico", href: "https://panjinye.com/favicon.ico" },
+  { label: "描述", text: site.description },
+];
 ---
 
 <BaseLayout title="友链">
   <section class="simple-page friends-page">
     <p class="eyebrow">Friends</p>
     <h1>友链</h1>
+    <section class="friend-site-info" aria-labelledby="friend-site-info-title">
+      <div class="friend-site-info-heading">
+        <h2 id="friend-site-info-title">站点信息</h2>
+      </div>
+      <dl class="friend-site-info-list">
+        {
+          ownSiteInfo.map((item) => (
+            <div>
+              <dt>{item.label}</dt>
+              <dd>
+                <span class="friend-site-info-value">
+                  {item.href ? (
+                    <a href={item.href}>{item.text}</a>
+                  ) : (
+                    item.text
+                  )}
+                </span>
+                <button class="friend-copy-button" type="button" data-copy-value={item.text} aria-label={"复制" + item.label} title={"复制" + item.label}>
+                  <i class="fa-regular fa-copy" aria-hidden="true"></i>
+                  <span>复制</span>
+                </button>
+              </dd>
+            </div>
+          ))
+        }
+      </dl>
+    </section>
     <div class="friend-list">
       {
         friendLinks.map((friend) => (
@@ -38,3 +74,52 @@ import BaseLayout from "@/layouts/BaseLayout.astro";
     </div>
   </section>
 </BaseLayout>
+
+<script is:inline>
+  (() => {
+    const buttons = [...document.querySelectorAll("[data-copy-value]")];
+
+    const fallbackCopy = (value) => {
+      const textarea = document.createElement("textarea");
+      textarea.value = value;
+      textarea.setAttribute("readonly", "");
+      textarea.style.position = "fixed";
+      textarea.style.opacity = "0";
+      document.body.append(textarea);
+      textarea.select();
+      document.execCommand("copy");
+      textarea.remove();
+    };
+
+    const copyText = async (value) => {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(value);
+        return;
+      }
+      fallbackCopy(value);
+    };
+
+    buttons.forEach((button) => {
+      const label = button.querySelector("span");
+      const originalText = label?.textContent || "复制";
+
+      button.addEventListener("click", async () => {
+        const value = button.getAttribute("data-copy-value") || "";
+        try {
+          await copyText(value);
+          button.classList.add("is-copied");
+          if (label) label.textContent = "已复制";
+          window.setTimeout(() => {
+            button.classList.remove("is-copied");
+            if (label) label.textContent = originalText;
+          }, 1400);
+        } catch {
+          if (label) label.textContent = "失败";
+          window.setTimeout(() => {
+            if (label) label.textContent = originalText;
+          }, 1400);
+        }
+      });
+    });
+  })();
+</script>

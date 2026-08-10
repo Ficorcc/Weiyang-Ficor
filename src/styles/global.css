@@ -1279,10 +1279,102 @@ h3 {
   width: min(900px, 100%);
 }
 
+.friend-site-info {
+  display: grid;
+  gap: 20px;
+  margin-top: 24px;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+
+.friend-site-info-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.friend-site-info h2 {
+  margin: 0 0 4px;
+  font-size: 1.18rem;
+}
+
+.friend-site-info-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px 22px;
+  margin: 0;
+}
+
+.friend-site-info-list > div {
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  gap: 10px;
+  align-items: baseline;
+}
+
+.friend-site-info-list dt {
+  color: var(--red);
+  font-weight: 700;
+}
+
+.friend-site-info-list dd {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  color: var(--ink);
+}
+
+.friend-site-info-value {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+
+.friend-copy-button {
+  flex: 0 0 auto;
+  min-height: 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 7px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.78rem;
+  line-height: 1.2;
+  cursor: pointer;
+}
+
+.friend-copy-button:hover,
+.friend-copy-button:focus-visible,
+.friend-copy-button.is-copied {
+  border-color: var(--red);
+  color: var(--red);
+}
+
+.friend-copy-button:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--red), transparent 65%);
+  outline-offset: 2px;
+}
+
+.friend-copy-button i {
+  font-size: 0.86em;
+}
+
+.friend-site-info-list a {
+  color: inherit;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
 .friend-list {
   display: grid;
   gap: 32px;
-  margin-top: 30px;
+  margin-top: 34px;
 }
 
 .friend-item {
@@ -1575,6 +1667,14 @@ h3 {
   .post-body .lared-grid-3,
   .post-body .lared-grid-4 {
     grid-template-columns: 1fr;
+  }
+
+  .friend-site-info-list {
+    grid-template-columns: 1fr;
+  }
+
+  .friend-site-info-list dd {
+    align-items: flex-start;
   }
 
   .friend-head,
