@@ -533,6 +533,36 @@ h3 {
   margin-bottom: 0;
 }
 
+.moment-content {
+  display: grid;
+  gap: 8px;
+}
+
+.moment-content h2 {
+  font-size: 1.35rem;
+}
+
+.moment-content p,
+.moment-content ul,
+.moment-content ol,
+.moment-content blockquote,
+.moment-content figure {
+  margin: 0;
+}
+
+.moment-content a {
+  color: var(--red);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.moment-content img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  border-radius: var(--radius);
+}
+
 .moment-item p,
 .article-card p,
 .simple-page p {

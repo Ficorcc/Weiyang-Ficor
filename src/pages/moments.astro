@@ -9,15 +9,18 @@ import { moments } from "@/utils/moments";
     <h1>动态</h1>
     <div class="moment-list page-list">
       {
-        moments.map((moment) => (
-          <article class="moment-item">
-            <div>
-              <h2>{moment.title}</h2>
-              <p>{moment.text}</p>
-            </div>
-            <time datetime={moment.date}>{moment.date}</time>
-          </article>
-        ))
+        moments.map((moment) => {
+          const Content = moment.Content;
+          return (
+            <article class="moment-item moment-entry">
+              <div class="moment-content">
+                {moment.hasTitle && <h2>{moment.title}</h2>}
+                <Content />
+              </div>
+              <time datetime={moment.date}>{moment.date}</time>
+            </article>
+          );
+        })
       }
     </div>
   </section>
