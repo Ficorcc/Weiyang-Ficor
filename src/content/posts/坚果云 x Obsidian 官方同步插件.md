@@ -1,8 +1,8 @@
 ---
 title: 坚果云 x Obsidian 官方同步插件
 id: nuts-obsidian
-timestamp: 2026-01-15 15:50:18
-series: 分享
+date: 2026-01-15 15:50:18
+category: 分享
 tags: ["Astro", "Obsidian", "博客", "坚果云", "网站"]
 ---
 新的一年已经过去半个月了，好久没更新了，也是因为最近一直没有什么值得记录的。

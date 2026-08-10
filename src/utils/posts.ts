@@ -28,7 +28,8 @@ const getTitleFromPath = (filePath: string) => {
   return filename.replace(/\.md$/, "");
 };
 
-const toDateString = (value: unknown) => {
+const toDateString = (value: unknown): string => {
+  if (Array.isArray(value)) return toDateString(value[0]);
   if (value instanceof Date) return value.toISOString().slice(0, 10);
   if (typeof value === "string" && value.trim()) return value.trim().replace(" ", "T").slice(0, 10);
   return "2026-08-10";

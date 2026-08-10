@@ -1,9 +1,12 @@
 ---
 title: "蠢蠢欲动的AI"
-timestamp: 2026-08-10
-series: 文章
+date: 2026-05-26
+category: 文章
 tags:
-  - 导入
+  - AI
+  - CodeX
+  - Trae
+  - ThoughtLite
 ---
 Vibe Coding真的是让人上头，容易成瘾啊。基本上只要你有想法有钱有Token，就没有办不成的事。我这一瓶子不满，半瓶子晃荡的水平，也能做到自己解决问题，不用事事麻烦别人。现在的情况，对于我来说已经很满足了。
 最近梯子比较稳定之后，我用上了 CodeX + GPT5.5，瞬间觉得这 Trae 一点也不香了。手里的Trae CN换成了Trae SOLO CN，直接从 0 开始，感觉已经上了一个档次了。但是理解能力，编程能力和 CodeX 比起来，只能让贤了。尤其CodeX + GPT5.5的自然语言理解能力和上下文的阅读记忆能力太厉害了。从Trae CN换成CodeX + GPT5.5的惊艳程度，就像我从豆包+Vs code 换到Trae的惊艳程度还要厉害。

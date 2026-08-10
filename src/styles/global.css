@@ -394,7 +394,22 @@ main {
 }
 
 .profile-copy h1 {
-  font-size: clamp(1.68rem, 4.8vw, 3.6rem);
+  font-size: clamp(1.1rem, 2.7vw, 1.85rem);
+}
+
+.profile-subtitle {
+  display: grid;
+  gap: 6px;
+  line-height: 1.32;
+}
+
+.profile-subtitle span {
+  display: block;
+}
+
+.profile-subtitle span + span {
+  color: var(--muted);
+  font-size: 0.76em;
 }
 
 .hero-logo {
@@ -553,6 +568,20 @@ h3 {
 
 .article-card h2 {
   font-size: 1.35rem;
+}
+
+.project-link {
+  color: inherit;
+  text-decoration: none;
+}
+
+.project-link:hover {
+  color: var(--red);
+}
+
+.project-link:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 3px;
 }
 
 .article-meta {
@@ -1219,6 +1248,27 @@ h3 {
 
 .eyebrow.taxonomy-link {
   display: inline-block;
+}
+
+.about-markdown {
+  margin-top: 22px;
+}
+
+.about-markdown h1 {
+  display: none;
+}
+
+.about-markdown hr {
+  width: 100%;
+  height: 1px;
+  border: 0;
+  background: var(--line);
+}
+
+.about-markdown a {
+  color: var(--red);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
 }
 
 .about-projects {

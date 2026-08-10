@@ -1,11 +1,11 @@
 ---
 title: Hello world!
 id: Hello world
-timestamp: 2015-12-14 17:52:32
-series: 文章
+date: 2015-12-14 17:52:32
+category: 文章
 tags:
-- Wordpress
-- 网站
+ - Wordpress
+ - 网站
 ---
 Welcome to WordPress. This is your first post. Edit or delete it, then start writing!
 

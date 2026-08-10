@@ -1,9 +1,12 @@
 ---
 title: "AI工具近况"
-timestamp: 2026-08-10
-series: 文章
+date: 2026-04-22
+category: 技术
 tags:
-  - 导入
+  - AI
+  - App
+  - Memos
+  - 龙虾
 ---
 ## **养龙虾**
 

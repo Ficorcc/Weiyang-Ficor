@@ -31,6 +31,7 @@ const timelineItems = timelineDates
   })
   .sort((a, b) => a.date.localeCompare(b.date));
 const maxUpdateCount = Math.max(...timelineItems.map((item) => item.count));
+const subtitleLines = Array.isArray(profile.subtitle) ? profile.subtitle : [profile.subtitle];
 ---
 
 <BaseLayout title="首页" description="个人介绍、最新动态与最新文章。">
@@ -38,7 +39,9 @@ const maxUpdateCount = Math.max(...timelineItems.map((item) => item.count));
     <div class="profile-card">
       <div class="profile-copy">
         <p class="profile-title">{site.title}</p>
-        <h1>{profile.subtitle}</h1>
+        <h1 class="profile-subtitle">
+          {subtitleLines.map((line) => <span>{line}</span>)}
+        </h1>
       </div>
       <img class="hero-logo" src={site.logo} alt="" />
     </div>

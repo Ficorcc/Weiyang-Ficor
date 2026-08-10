@@ -1,14 +1,16 @@
 ---
 import BaseLayout from "@/layouts/BaseLayout.astro";
-import { profile, projects } from "@/data/site";
+import AboutContent from "@/content/pages/about.md";
+import { projects } from "@/data/site";
 ---
 
 <BaseLayout title="关于">
   <section class="simple-page">
     <p class="eyebrow">About</p>
     <h1>关于</h1>
-    <p>{profile.intro}</p>
-    <p>这个页面预留给个人简介、联系方式、站点说明和长期关注的方向。</p>
+    <div class="about-markdown post-body">
+      <AboutContent />
+    </div>
 
     <div class="about-projects">
       <p class="eyebrow">Projects</p>
@@ -16,7 +18,7 @@ import { profile, projects } from "@/data/site";
         {
           projects.map((project) => (
             <article class="article-card">
-              <h2>{project.title}</h2>
+              <h2>{project.href ? <a class="project-link" href={project.href} target="_blank" rel="noreferrer">{project.title}</a> : project.title}</h2>
               <p>{project.text}</p>
             </article>
           ))
