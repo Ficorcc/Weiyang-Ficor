@@ -254,11 +254,9 @@ a:hover {
 .nav-travel:hover .travel-menu,
 .nav-travel:focus-within .travel-menu,
 .nav-travel.is-hover-open .travel-menu,
-.nav-travel.is-open .travel-menu,
 .nav-theme:hover .theme-menu,
 .nav-theme:focus-within .theme-menu,
-.nav-theme.is-hover-open .theme-menu,
-.nav-theme.is-open .theme-menu {
+.nav-theme.is-hover-open .theme-menu {
   opacity: 1;
   visibility: visible;
   transform: translateY(0);

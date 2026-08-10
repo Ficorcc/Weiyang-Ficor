@@ -314,8 +314,6 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
         const travelButton = document.querySelector("[data-travel-toggle]");
         const themeMenu = document.querySelector("[data-theme-menu]");
         const themeOptions = [...document.querySelectorAll("[data-theme-option]")];
-        let travelCloseTimer;
-        let themeCloseTimer;
         let autoThemeTimer;
 
         const themes = ["paper", "pine", "dark"];
@@ -372,18 +370,17 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
           updateThemeMenu(nextMode, nextTheme);
         };
 
+        const closeTravelMenu = () => {
+          travelMenu?.classList.remove("is-hover-open");
+          travelButton?.setAttribute("aria-expanded", "false");
+        };
+
         const closeThemeMenu = () => {
-          themeMenu?.classList.remove("is-open");
           themeMenu?.classList.remove("is-hover-open");
           themeButton?.setAttribute("aria-expanded", "false");
         };
 
         applyThemeMode(localStorage.getItem("theme-mode") || root.dataset.themeMode || "auto", { persist: false });
-        themeButton?.addEventListener("click", () => {
-          const isOpen = themeMenu?.classList.toggle("is-open");
-          themeButton.setAttribute("aria-expanded", String(Boolean(isOpen)));
-        });
-
         themeOptions.forEach((option) => {
           option.addEventListener("click", () => {
             applyThemeMode(option.getAttribute("data-theme-option") || "auto");
@@ -392,19 +389,11 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
         });
 
         themeMenu?.addEventListener("mouseenter", () => {
-          window.clearTimeout(themeCloseTimer);
           themeMenu.classList.add("is-hover-open");
           themeButton?.setAttribute("aria-expanded", "true");
         });
 
-        themeMenu?.addEventListener("mouseleave", () => {
-          themeCloseTimer = window.setTimeout(() => {
-            themeMenu.classList.remove("is-hover-open");
-            if (!themeMenu.classList.contains("is-open")) {
-              themeButton?.setAttribute("aria-expanded", "false");
-            }
-          }, 650);
-        });
+        themeMenu?.addEventListener("mouseleave", closeThemeMenu);
 
         searchButton?.addEventListener("click", () => {
           const isOpening = searchPanel?.hasAttribute("hidden");
@@ -413,31 +402,16 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
           if (isOpening) window.setTimeout(() => searchInput?.focus(), 0);
         });
 
-        travelButton?.addEventListener("click", () => {
-          const isOpen = travelMenu?.classList.toggle("is-open");
-          travelButton.setAttribute("aria-expanded", String(Boolean(isOpen)));
-        });
-
         travelMenu?.addEventListener("mouseenter", () => {
-          window.clearTimeout(travelCloseTimer);
           travelMenu.classList.add("is-hover-open");
           travelButton?.setAttribute("aria-expanded", "true");
         });
 
-        travelMenu?.addEventListener("mouseleave", () => {
-          travelCloseTimer = window.setTimeout(() => {
-            travelMenu.classList.remove("is-hover-open");
-            if (!travelMenu.classList.contains("is-open")) {
-              travelButton?.setAttribute("aria-expanded", "false");
-            }
-          }, 650);
-        });
+        travelMenu?.addEventListener("mouseleave", closeTravelMenu);
 
         document.addEventListener("click", (event) => {
           if (!travelMenu?.contains(event.target)) {
-            travelMenu?.classList.remove("is-open");
-            travelMenu?.classList.remove("is-hover-open");
-            travelButton?.setAttribute("aria-expanded", "false");
+            closeTravelMenu();
           }
           if (!themeMenu?.contains(event.target)) {
             closeThemeMenu();
@@ -456,9 +430,7 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
           if (event.key === "Escape") {
             searchPanel?.setAttribute("hidden", "");
             searchButton?.setAttribute("aria-expanded", "false");
-            travelMenu?.classList.remove("is-open");
-            travelMenu?.classList.remove("is-hover-open");
-            travelButton?.setAttribute("aria-expanded", "false");
+            closeTravelMenu();
             closeThemeMenu();
           }
         });
