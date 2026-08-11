@@ -179,7 +179,7 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" />
     <script is:inline>
       (() => {
-        const themes = ["paper", "pine", "dark"];
+        const themes = ["paper", "white", "pine", "dark"];
         const storedTheme = localStorage.getItem("theme-mode") || "auto";
         const getAutoTheme = () => {
           const hour = new Date().getHours();
@@ -240,6 +240,10 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
               <button type="button" data-theme-option="paper">
                 <span>日间</span>
                 <small>浅色纸张</small>
+              </button>
+              <button type="button" data-theme-option="white">
+                <span>白色</span>
+                <small>纯白底色</small>
               </button>
               <button type="button" data-theme-option="pine">
                 <span>绿色</span>
@@ -317,10 +321,11 @@ const footerSocialLinks = site.socialLinks.map((item) => ({
         const themeOptions = [...document.querySelectorAll("[data-theme-option]")];
         let autoThemeTimer;
 
-        const themes = ["paper", "pine", "dark"];
+        const themes = ["paper", "white", "pine", "dark"];
         const themeNames = {
           auto: "自动",
           paper: "日间",
+          white: "白色",
           pine: "绿色",
           dark: "夜间",
         };

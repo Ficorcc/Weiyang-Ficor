@@ -31,6 +31,9 @@ const timelineItems = timelineDates
   })
   .sort((a, b) => a.date.localeCompare(b.date));
 const maxUpdateCount = Math.max(...timelineItems.map((item) => item.count));
+const timelineStartDate = timelineItems[0]?.date;
+const timelineEndDate = timelineItems.at(-1)?.date;
+const isOddTimelineDate = (date: string) => Number(date.split("-").at(-1)) % 2 === 1;
 const subtitleLines = Array.isArray(profile.subtitle) ? profile.subtitle : [profile.subtitle];
 ---
 
@@ -84,36 +87,44 @@ const subtitleLines = Array.isArray(profile.subtitle) ? profile.subtitle : [prof
 
     <div class="timeline-divider" aria-hidden="true"></div>
 
-    <div class="update-timeline" aria-label="更新频率时间轴">
-      {
-        timelineItems.map((item, index) => (
-          <time
-            class:list={["timeline-node", index % 2 === 0 ? "is-above" : "is-below"]}
-            datetime={item.date}
-            title={`${item.date} 更新 ${item.count} 次`}
-            style={`--node-height: ${11 + (item.count / maxUpdateCount) * 23}px`}
-            aria-label={`${item.date} 更新 ${item.count} 次`}
-            tabindex="0"
-          >
-            <span class="timeline-line"></span>
-            <span class="timeline-popover" aria-hidden="true">
-              <strong>{item.date}</strong>
-              {item.items.map((update) => (
-                <span class="timeline-update">
-                  <em>{update.type}</em>
-                  <span>{update.title}</span>
-                </span>
-              ))}
-              {item.comments.map((comment) => (
-                <span class="timeline-update timeline-comment">
-                  <span>{comment.articleTitle}</span>
-                  <em>{comment.commenter}</em>
-                </span>
-              ))}
-            </span>
-          </time>
-        ))
-      }
+    <div class="timeline-wrap">
+      <div class="update-timeline" aria-label="更新频率时间轴">
+        {
+          timelineItems.map((item) => (
+            <time
+              class:list={["timeline-node", isOddTimelineDate(item.date) ? "is-above" : "is-below"]}
+              datetime={item.date}
+              title={`${item.date} 更新 ${item.count} 次`}
+              style={`--node-height: ${11 + (item.count / maxUpdateCount) * 23}px`}
+              aria-label={`${item.date} 更新 ${item.count} 次`}
+              tabindex="0"
+            >
+              <span class="timeline-line"></span>
+              <span class="timeline-popover" aria-hidden="true">
+                <strong>{item.date}</strong>
+                {item.items.map((update) => (
+                  <span class="timeline-update">
+                    <em>{update.type}</em>
+                    <span>{update.title}</span>
+                  </span>
+                ))}
+                {item.comments.map((comment) => (
+                  <span class="timeline-update timeline-comment">
+                    <span>{comment.articleTitle}</span>
+                    <em>{comment.commenter}</em>
+                  </span>
+                ))}
+              </span>
+            </time>
+          ))
+        }
+      </div>
+      {timelineStartDate && timelineEndDate && (
+        <div class="timeline-edge-labels" aria-hidden="true">
+          <time datetime={timelineStartDate}>{timelineStartDate}</time>
+          <time datetime={timelineEndDate}>{timelineEndDate}</time>
+        </div>
+      )}
     </div>
   </section>
 </BaseLayout>
